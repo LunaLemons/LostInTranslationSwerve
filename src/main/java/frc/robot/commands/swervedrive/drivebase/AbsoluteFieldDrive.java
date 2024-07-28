@@ -9,13 +9,16 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
 import swervelib.math.SwerveMath;
-
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 /**
  * An example command that uses an example subsystem.
  */
@@ -24,6 +27,9 @@ public class AbsoluteFieldDrive extends Command
 
   private final SwerveSubsystem swerve;
   private final DoubleSupplier  vX, vY, heading;
+
+  
+  
 
   /**
    * Used to drive a swerve robot in full field-centric mode.  vX and vY supply translation inputs, where x is
@@ -41,10 +47,10 @@ public class AbsoluteFieldDrive extends Command
    */
   public AbsoluteFieldDrive(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY,
                             DoubleSupplier heading)
-  {
+  { 
     this.swerve = swerve;
-    this.vX = vX;
-    this.vY = vY;
+    this.vX = (vX); 
+    this.vY = (vY);
     this.heading = heading;
 
     addRequirements(swerve);
@@ -62,7 +68,7 @@ public class AbsoluteFieldDrive extends Command
 
     // Get the desired chassis speeds based on a 2 joystick module.
 
-    ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), vY.getAsDouble(),
+    ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), (vY.getAsDouble()),
                                                          new Rotation2d(heading.getAsDouble() * Math.PI));
 
     // Limit velocity to prevent tippy
