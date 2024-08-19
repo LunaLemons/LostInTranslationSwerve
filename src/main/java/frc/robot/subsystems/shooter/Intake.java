@@ -19,6 +19,7 @@ public class Intake extends SubsystemBase{
     // create a Motion Magic Velocity request, voltage output
     final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
 
+
     // set target position to 100 rotations
 
 
@@ -49,6 +50,7 @@ public class Intake extends SubsystemBase{
     public Command flywheel(int value){
         return run(() -> m_Flywheel.setControl(m_request.withVelocity(value)));
     }
+
 
     @Override
     public void periodic() {

@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -18,6 +19,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.shooter.Hinge;
 import frc.robot.subsystems.shooter.Intake;
+import frc.robot.subsystems.shooter.Rollers;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 
@@ -36,6 +38,7 @@ public class RobotContainer
                                                                          "swerve/falcon"));
   private final Hinge hinge = new Hinge();
   private final Intake intake = new Intake();
+  private final Rollers rollers = new Rollers();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -83,8 +86,8 @@ public class RobotContainer
     Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
 
         // Apply Deadband and trigger-based speed control :3
-        () -> MathUtil.applyDeadband((driverXbox.getLeftY() * (0.40 + (0.60 * (1 - driverXbox.getRightTriggerAxis())))), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband((driverXbox.getLeftX()* (0.40 + (0.60 * (1 - driverXbox.getRightTriggerAxis())))), OperatorConstants.LEFT_X_DEADBAND),
+        () -> MathUtil.applyDeadband((driverXbox.getLeftY() * (0.30 + (0.70 * (1 - driverXbox.getRightTriggerAxis())))), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband((driverXbox.getLeftX()* (0.30 + (0.70 * (1 - driverXbox.getRightTriggerAxis())))), OperatorConstants.LEFT_X_DEADBAND),
         () -> driverXbox.getRightX() * 1);
 
 
@@ -108,19 +111,38 @@ public class RobotContainer
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-    driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
-    driverXbox.b().whileTrue(
-        Commands.deferredProxy(() -> drivebase.driveToPose(
-                                   new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
-                              ));
-    driverXbox.y().whileTrue(drivebase.aimAtSpeaker(2));
-    driverXbox.leftBumper().whileTrue(hinge.Setpoints(45));
-    driverXbox.rightBumper().whileTrue(hinge.Setpoints(0));
+    driverXbox.povUp().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+    // driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
+    // driverXbox.b().whileTrue(
+    //    Commands.deferredProxy(() -> drivebase.driveToPose(
+    //                               new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
+    //                          ));
+    // driverXbox.y().whileTrue(drivebase.aimAtSpeaker(2));
 
-    driverXbox.povUp().whileTrue(intake.flywheel(60));
-    driverXbox.povDown().whileTrue(intake.flywheel(-20));
-    driverXbox.povCenter().whileTrue(intake.flywheel(0));
+
+    // Hinge Setpoints
+    driverXbox.b().whileTrue(hinge.Setpoints(97));
+    driverXbox.a().whileTrue(hinge.Setpoints(60));
+    driverXbox.x().whileTrue(hinge.Setpoints(1));
+
+    // Flywheel Speeds
+    driverXbox.leftBumper().whileTrue(intake.flywheel(14));
+    driverXbox.rightBumper().whileTrue(intake.flywheel(-10));
+
+    
+    //none of this works
+    driverXbox.leftBumper().and(driverXbox.rightBumper()).whileTrue(intake.flywheel(0));
+
+    
+    // Roller Speeds
+    driverXbox.leftBumper().whileTrue(rollers.roller(-10));
+    driverXbox.rightBumper().whileTrue(rollers.roller(10));
+
+    
+    // yeah this doesn't either
+    driverXbox.leftBumper().and(driverXbox.rightBumper()).whileTrue(rollers.roller(0));
+
+    
 
   
     // driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
