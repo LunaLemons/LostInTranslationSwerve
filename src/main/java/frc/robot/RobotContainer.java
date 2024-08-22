@@ -20,6 +20,7 @@ import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.shooter.Hinge;
 import frc.robot.subsystems.shooter.Intake;
 import frc.robot.subsystems.shooter.Rollers;
+import frc.robot.subsystems.sequences.Amp;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 
@@ -33,12 +34,14 @@ public class RobotContainer
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
+  final CommandXboxController shooterXbox = new CommandXboxController(1);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve/falcon"));
   private final Hinge hinge = new Hinge();
   private final Intake intake = new Intake();
   private final Rollers rollers = new Rollers();
+  private final Amp amp = new Amp();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -121,26 +124,28 @@ public class RobotContainer
 
 
     // Hinge Setpoints
-    driverXbox.b().whileTrue(hinge.Setpoints(97));
-    driverXbox.a().whileTrue(hinge.Setpoints(60));
-    driverXbox.x().whileTrue(hinge.Setpoints(1));
+    shooterXbox.b().whileTrue(amp.lamp());
+
+
+    shooterXbox.a().whileTrue(hinge.Setpoints(72));
+    shooterXbox.x().whileTrue(hinge.Setpoints(1));
 
     // Flywheel Speeds
-    driverXbox.leftBumper().whileTrue(intake.flywheel(14));
-    driverXbox.rightBumper().whileTrue(intake.flywheel(-10));
+    shooterXbox.leftBumper().whileTrue(intake.flywheel(85.0).withTimeout(2));
+    shooterXbox.rightBumper().whileTrue(intake.flywheel(-10.0));
 
     
     //none of this works
-    driverXbox.leftBumper().and(driverXbox.rightBumper()).whileTrue(intake.flywheel(0));
+    shooterXbox.leftBumper().and(shooterXbox.rightBumper()).whileTrue(intake.flywheel(0.0));
 
     
     // Roller Speeds
-    driverXbox.leftBumper().whileTrue(rollers.roller(-10));
-    driverXbox.rightBumper().whileTrue(rollers.roller(10));
+    shooterXbox.leftBumper().whileTrue(rollers.roller(-40.0).withTimeout(2));
+    shooterXbox.rightBumper().whileTrue(rollers.roller(10.0));
 
-    
+
     // yeah this doesn't either
-    driverXbox.leftBumper().and(driverXbox.rightBumper()).whileTrue(rollers.roller(0));
+    shooterXbox.leftBumper().and(shooterXbox.rightBumper()).whileTrue(rollers.roller(0.0));
 
     
 

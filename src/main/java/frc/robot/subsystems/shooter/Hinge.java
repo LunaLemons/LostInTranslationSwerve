@@ -38,7 +38,7 @@ public class Hinge extends SubsystemBase{
 
         // set Motion Magic Expo settings
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 10; // Unlimited cruise velocity
+        motionMagicConfigs.MotionMagicCruiseVelocity = 15; // Unlimited cruise velocity
         motionMagicConfigs.MotionMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
         motionMagicConfigs.MotionMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
 

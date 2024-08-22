@@ -47,7 +47,7 @@ public class Intake extends SubsystemBase{
 
     }
 
-    public Command flywheel(int value){
+    public Command flywheel(Double value){
         return run(() -> m_Flywheel.setControl(m_request.withVelocity(value)));
     }
 
